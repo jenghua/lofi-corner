@@ -2,15 +2,13 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Music, Wind, Timer, CheckSquare } from "lucide-react";
+import { Music, Timer, CheckSquare } from "lucide-react";
 import MusicPlayer from "./MusicPlayer";
-import AmbientMixer from "./AmbientMixer";
 import PomodoroTimer from "./PomodoroTimer";
 import TodoList from "./TodoList";
 
 const TABS = [
   { id: "music",   Icon: Music,        label: "Music"   },
-  { id: "ambient", Icon: Wind,         label: "Ambient" },
   { id: "timer",   Icon: Timer,        label: "Timer"   },
   { id: "tasks",   Icon: CheckSquare,  label: "Tasks"   },
 ] as const;
@@ -47,7 +45,6 @@ const Sidebar = () => {
             }}
           >
             {active === "music"   && <MusicPlayer />}
-            {active === "ambient" && <AmbientMixer />}
             {active === "timer"   && <PomodoroTimer />}
             {active === "tasks"   && <TodoList />}
           </motion.div>

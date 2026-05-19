@@ -169,8 +169,10 @@ const MusicPlayer = () => {
       </div>
 
       {playing && (
-        <iframe ref={iframeRef} src={src} style={{ display:"none" }}
-          allow="autoplay" onLoad={() => setLoading(false)} />
+        <iframe ref={iframeRef} src={src}
+          style={{ position:"fixed", left:"-9999px", top:0, width:1, height:1 }}
+          allow="autoplay; encrypted-media"
+          onLoad={() => setLoading(false)} />
       )}
     </div>
   );

@@ -28,7 +28,7 @@ export const STATIONS: Station[] = [
     id: "lofi-cafe",
     name: "Café Lofi",
     description: "Coffee shop vibes",
-    youtubeId: "kgx4WGK0oNU",
+    youtubeId: "7n9Dqsy3aj4",
     emoji: "☕",
     color: "#d97706",
   },
@@ -40,20 +40,4 @@ export const STATIONS: Station[] = [
     emoji: "🌙",
     color: "#ec4899",
   },
-];
-
-export interface AmbientSound {
-  id: string;
-  name: string;
-  emoji: string;
-  url: string;
-}
-
-export const AMBIENT_SOUNDS: AmbientSound[] = [
-  { id: "rain", name: "Rain", emoji: "🌧️", url: "/sounds/rain.mp3" },
-  { id: "cafe", name: "Café", emoji: "☕", url: "/sounds/cafe.mp3" },
-  { id: "fire", name: "Fireplace", emoji: "🔥", url: "/sounds/fire.mp3" },
-  { id: "forest", name: "Forest", emoji: "🌲", url: "/sounds/forest.mp3" },
-  { id: "ocean", name: "Ocean", emoji: "🌊", url: "/sounds/ocean.mp3" },
-  { id: "keyboard", name: "Keyboard", emoji: "⌨️", url: "/sounds/keyboard.mp3" },
 ];

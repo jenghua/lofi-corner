@@ -1,144 +1,151 @@
-# CLAUDE.md
+# CLAUDE.md — LoFi Corner Implementation Guide
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance for Claude AI when working on this codebase.
 
-@AGENTS.md
+See [AGENTS.md](AGENTS.md) for architecture overview and conventions.
 
-## Commands
+## Commands Reference
 
 ```bash
-npm run dev           # start dev server at localhost:3000 (uses --webpack flag)
-npm run build         # production build (also validates types via Next.js)
-npm run lint          # ESLint via eslint-config-next
-npm run format        # Prettier write pass
-npm run format:check  # Prettier check (used in CI)
-npm test              # Jest (jsdom, @testing-library/react)
-npm run test:watch    # Jest in watch mode
-npm run test:coverage # Jest with v8 coverage
-npx tsc --noEmit      # type-check without emitting
+npm run dev           # Start dev server at localhost:3000 (Turbopack enabled)
+npm run build         # Production build + type validation
+npm start             # Run production server locally
+npm run lint          # ESLint check (eslint-config-next rules)
+npx tsc --noEmit      # Type-check without emitting files
 ```
 
-No test files exist yet, but Jest is configured (`jest.config.ts`, `jest.setup.ts`) with jsdom and `@/` alias support. Use `npx tsc --noEmit` to verify types after changes.
+## Project Structure
 
-Prettier runs automatically on commit via Husky + lint-staged (`.husky/pre-commit`). Prettier config is `.prettierrc` (100-char width, double quotes, semicolons, trailing commas).
+```
+src/
+├── app/                          # Next.js App Router
+│   ├── layout.tsx               # Root layout (no providers needed, client-only)
+│   ├── page.tsx                 # Single page, uses "use client"
+│   └── globals.css              # Tailwind resets + global styles
+├── components/                   # All UI components (flat, no subdirs)
+│   ├── Scene.tsx                # Background animation (Framer Motion)
+│   ├── MusicPlayer.tsx          # YouTube station player
+│   ├── AmbientMixer.tsx         # Web Audio API ambient sounds
+│   ├── PomodoroTimer.tsx        # Focus/break timer
+│   ├── TodoList.tsx             # Task manager
+│   ├── Clock.tsx                # Analog clock
+│   └── Sidebar.tsx              # Main UI container
+└── lib/                          # Utilities & constants
+    └── stations.ts              # Music stations + ambient sounds config
+```
 
-All imports use the `@/` alias (configured in `tsconfig.json` as `"@/*": ["./*"]`). Never use relative paths (`./` or `../`). Examples:
+## Styling Approach
+
+**NO CSS modules. NO styled-components. NO emotion.** Only inline styles:
+
+```tsx
+// ✅ DO: Inline styles
+<div style={{
+  width: "100vw",
+  height: "100dvh",
+  background: "linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%)",
+  overflow: "hidden"
+}}>
+
+// ✅ DO: Tailwind classes (sparingly)
+<button className="absolute top-4 right-4 z-50">
+
+// ❌ DON'T: CSS imports, CSS modules, className generators
+```
+
+**Color palette:**
+- Navy: `#0a0e27`, `#1a1f3a`
+- Glass cards: `rgba(255,255,255,0.04)` background + `1px solid rgba(255,255,255,0.08)` border
+- Accents: `#ffd700` (gold), `#a855f7` (purple), `#06b6d4` (cyan)
+
+## State Management
+
+**Only `useState` hooks.** No Redux, no Context API, no Zustand.
+
+Components manage their own state:
+- `MusicPlayer.tsx` — Current station index
+- `AmbientMixer.tsx` — Sound volumes (0–1 range)
+- `PomodoroTimer.tsx` — Time remaining, session mode (focus/break/long-break)
+- `TodoList.tsx` — Task array
+- `Scene.tsx` — Animation frame counter (if needed)
+
+**Pass data down via props, events up via callbacks.** Minimal prop drilling needed since all UI is in `Sidebar.tsx`.
+
+## Web Audio API Implementation
+
+**Ambient sounds** are procedurally generated, not file-based:
+
+```tsx
+const generateNoise = (buffer, type) => {
+  // type: "white", "pink", "brown", "fire", "rain", "ocean", etc.
+  // Fills audio buffer with synthesized waveform
+}
+
+// In AmbientMixer.tsx:
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const oscillator = audioContext.createOscillator();
+const gainNode = audioContext.createGain();
+oscillator.connect(gainNode);
+gainNode.connect(audioContext.destination);
+gainNode.gain.value = volume; // 0–1
+```
+
+Each sound has a unique algorithm (e.g., rain = filtered pink noise, fire = brown noise + AM modulation).
+
+## YouTube Embed Pattern
+
+All 4 stations use YouTube embeds with these params:
+
+```tsx
+<iframe
+  src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&controls=0&loop=1`}
+  style={{ position: "absolute", left: "-9999px", visibility: "hidden" }}
+/>
+```
+
+**Key points:**
+- Video stays offscreen and invisible
+- Audio plays through Web Audio API / system audio
+- `loop=1` auto-restarts video
+- `autoplay=1` starts immediately
+- `mute=0` allows sound (unmute happens after user interaction for autoplay policy compliance)
+
+## TypeScript
+
+- **Strict mode enabled** in `tsconfig.json`
+- **All props typed** — No `any` types without justification
+- **Path alias:** `@/*` maps to `./src/`
 
 ```ts
-import { AppLayout } from "@/components/AppLayout/AppLayout";
-import { useAppSelector } from "@/store/hooks";
-import type { VocabularyItem } from "@/lib/api";
+// ✅ DO: Export types
+export type PomodoroMode = "focus" | "break" | "long-break";
+
+// ✅ DO: Typed props
+interface TimerProps {
+  onTimerEnd: (mode: PomodoroMode) => void;
+}
+
+// ❌ DON'T: any types
+const handleTick = (event: any) => { }; // ❌
+const handleTick = (event: PointerEvent) => { }; // ✅
 ```
 
-**Next.js 16 breaking change:** The `middleware.ts` file convention is deprecated. Use `proxy.ts` at the project root instead, and export a named `proxy` function (not `middleware`). The `config.matcher` shape is unchanged.
+## Performance Notes
 
-The backend is a Spring Boot server expected at `http://localhost:8080` (override via `API_BASE_URL` env var — server-side only, no `NEXT_PUBLIC_` prefix needed).
+1. **Full viewport layout** — `100vw, 100dvh` locks to device size
+2. **Animation frame efficiency** — Scene uses Framer Motion `animate` (GPU-accelerated)
+3. **Audio buffer management** — Ambient sounds are ~5s looped buffers (keep small to save memory)
+4. **No SSR** — Everything runs client-side; no data fetching on server
 
-## Architecture
+## Deployment
 
-### Request / API proxy flow
+This app is Vercel-ready. Build output goes to `.next/`. No custom server config needed.
 
-All `/api/*` paths are proxied through the Next.js server to Spring Boot via the `rewrites` rule in `next.config.ts`. The browser never contacts Spring Boot directly.
-
-```
-Browser → /api/* → Next.js (rewrite) → http://localhost:8080/api/*
-```
-
-`lib/api.ts` is the single fetch wrapper used by all services. It uses relative paths (e.g. `/api/user/profile`) so they resolve to the Next.js rewrite. It reads/writes `studyos_access_token` and `studyos_refresh_token` from `localStorage`, and automatically retries once on 401 by calling `/api/auth/refresh`. All API calls must go through this file — never use `fetch` directly.
-
-Service modules in `lib/services/` (`auth`, `vocabulary`, `stats`, `achievement`, `quest`, `battle`, `shop`, `session`, `music`) each wrap a slice of the REST API and are consumed only by Redux async thunks, never directly from components.
-
-### State management
-
-Ten Redux Toolkit slices in `store/`:
-
-| Slice          | Responsibility                                   |
-| -------------- | ------------------------------------------------ |
-| `auth`         | JWT tokens, user profile                         |
-| `vocabulary`   | Dictionary, study list, review queue             |
-| `game`         | RPG state: gold, XP, daily practice count        |
-| `userStats`    | HP, streak days, daily review counts from server |
-| `achievements` | Achievement list + unlock status                 |
-| `quests`       | Daily and weekly quest progress                  |
-| `battle`       | Active monster battle state                      |
-| `shop`         | Shop items for HP restoration                    |
-| `sessions`     | Study session tracking (start/end/history/stats) |
-| `music`        | Lofi music tracks and playback state             |
-
-The `game` slice is the only one persisted to `localStorage` (key `studyos-game`). This is done via a `store.subscribe()` call in `store/index.ts`. It initialises from `localStorage` on first load using a function initialiser in the slice, which guards `typeof window === "undefined"` for SSR safety.
-
-Use `useAppDispatch` / `useAppSelector` from `store/hooks.ts` — never the raw `useDispatch`/`useSelector`.
-
-### Page / component conventions
-
-Every page route and reusable component follows a five-file pattern:
-
-```
-page.tsx (or Component.tsx)   — JSX only, no logic
-use[Name].ts                  — all state + side-effects (React hooks, dispatch, selectors)
-[name]Data.ts                 — static constants / config arrays (no functions, no hooks)
-[name]Function.ts             — pure utility functions with no React dependencies
-[name].type.ts                — TypeScript interfaces for the hook return and props
+```bash
+npm run build    # Creates optimized Next.js build
+npm start        # Serves .next/ locally for testing
 ```
 
-Not every module needs all five files — only create the data/function files when there is content to put in them. The UI file and type file are always present; the hook is present when there is stateful logic.
+---
 
-When a component group has multiple related files, put them in their own sub-folder named after the component. Shared data/function files that are used by more than one group stay at the parent folder level.
-
-```
-components/
-  AppLayout/               ← group folder
-    AppLayout.tsx
-    useAppLayout.ts
-    appLayout.type.ts
-  StoreInitializer.tsx     ← single file, no folder needed
-  vocabulary/
-    vocabCardData.ts       ← shared: used by VocabCard + StudyListItem
-    VocabCard/
-      VocabCard.tsx
-      useVocabCard.ts
-      vocabCard.type.ts
-    StudyListItem/
-      StudyListItem.tsx
-      useStudyListItem.ts
-      studyListItemFunction.ts
-      studyListItem.type.ts
-    ReviewFlashcard/
-      ReviewFlashcard.tsx
-      useReviewFlashcard.ts
-      reviewFlashcard.type.ts
-
-app/dashboard/           ← Next.js App Router folders stay as-is
-  page.tsx
-  useDashboard.ts
-  dashboardData.ts
-  dashboard.type.ts
-app/login/
-  page.tsx
-  useLogin.ts
-  login.type.ts
-app/sessions/            ← study session timer
-app/music/               ← lofi music player
-app/vocabulary/
-app/quests/
-app/achievements/
-app/shop/
-app/profile/
-app/register/
-```
-
-Pages that require auth call `fetchProfileAsync` in their hook's `useEffect` and redirect to `/login` on failure. No layout-level auth guard exists.
-
-`components/AppLayout/AppLayout.tsx` is the authenticated shell. It reads from `vocabulary`, `game`, and `userStats` slices to display the RPG sidebar: level, XP bar, gold, HP bar, streak days. Wrap every authenticated page with `<AppLayout>`.
-
-### Styling / theming
-
-All MUI overrides live in `lib/theme.ts` (dark RPG theme: deep navy background, gold primary, purple secondary). Component-level style is written inline via the `sx` prop. Tailwind CSS is present but only used for global resets — prefer `sx` for component styling.
-
-`app/providers.tsx` composes `AppRouterCacheProvider` (Emotion cache) → Redux `Provider` → MUI `ThemeProvider` → `CssBaseline`. This is mounted in `app/layout.tsx`.
-
-### RPG game mechanics
-
-`lib/gameUtils.ts` exports `computePlayerStats(studyListSize, gold)` which derives `level`, `xpProgress`, `playerClass`, etc. from raw numbers. XP is purely `studyListSize * 20`. This is a pure function — it does not read from Redux.
-
-`store/gameSlice.ts` exports constants (`WORD_COST`, `DAILY_LIMIT`, `REVIEW_GOLD`, `REVIEW_XP`) used by both the slice and the vocabulary hook. Adding a word to the study list deducts `WORD_COST` gold from the `game` slice before dispatching `addToStudyListAsync`. Gold earnings from reviews are handled in `gameSlice.extraReducers` listening to `submitReviewAsync.fulfilled`.
+**No backend, no APIs, no external DB calls.**  Everything is browser-only, real-time.

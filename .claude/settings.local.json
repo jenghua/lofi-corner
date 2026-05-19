@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(cat /Users/zhangzhenghua/Desktop/studyos-api/src/main/java/com/studyos/studyos_api/controller/VocabularyController.java)",
+      "Read(//Users/zhangzhenghua/Desktop/studyos-api/src/main/java/com/studyos/studyos_api/controller/**)",
+      "Skill(vercel-react-best-practices)",
+      "Skill(vercel-react-best-practices:*)",
+      "Skill(frontend-design)",
+      "Skill(frontend-design:*)",
+      "Bash(find ~/Desktop/study-api -name \"*.java\" -path \"*/controller*\" 2>/dev/null | head -30)",
+      "Read(//Users/zhangzhenghua/Desktop/**)",
+      "Bash(ls ~/Desktop/ 2>/dev/null)"
+    ]
+  }
+}

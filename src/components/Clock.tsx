@@ -32,7 +32,7 @@ const Clock = () => {
         <span style={{ color: "rgba(241,245,249,0.7)", margin: "0 6px" }}>:</span>
         {mm}
       </div>
-      <div style={{ marginTop: 8, fontSize: 13, color: "#64748b", letterSpacing: "0.06em" }}>
+      <div style={{ marginTop: 8, fontSize: 13, color: "#94a3b8", letterSpacing: "0.06em" }}>
         {date}
       </div>
     </div>

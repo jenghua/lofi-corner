@@ -34,14 +34,14 @@ const TodoList = () => {
     }}>
       {/* Header */}
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-        <span style={{ fontSize:11, color:"#64748b", textTransform:"uppercase", letterSpacing:"0.08em" }}>Tasks</span>
+        <span style={{ fontSize:11, color:"#94a3b8", textTransform:"uppercase", letterSpacing:"0.08em" }}>Tasks</span>
         {done > 0 && (
           <button onClick={clearDone} style={{
             background:"none", border:"none", cursor:"pointer",
-            fontSize:11, color:"#475569", transition:"color 0.15s",
+            fontSize:11, color:"#8896a8", transition:"color 0.15s",
           }}
             onMouseOver={e => (e.currentTarget.style.color = "#f87171")}
-            onMouseOut={e => (e.currentTarget.style.color = "#475569")}
+            onMouseOut={e => (e.currentTarget.style.color = "#8896a8")}
           >
             Clear done ({done})
           </button>
@@ -58,14 +58,14 @@ const TodoList = () => {
               background: "linear-gradient(90deg,#7c3aed,#06b6d4)",
             }} />
           </div>
-          <span style={{ fontSize:11, color:"#475569", flexShrink:0 }}>{done}/{total}</span>
+          <span style={{ fontSize:11, color:"#8896a8", flexShrink:0 }}>{done}/{total}</span>
         </div>
       )}
 
       {/* List */}
       <div style={{ display:"flex", flexDirection:"column", gap:4, maxHeight:200, overflowY:"auto" }}>
         {todos.length === 0 ? (
-          <div style={{ textAlign:"center", padding:"16px 0", fontSize:13, color:"#334155" }}>
+          <div style={{ textAlign:"center", padding:"16px 0", fontSize:13, color:"#7a8fa8" }}>
             No tasks yet
           </div>
         ) : todos.map(todo => (
@@ -94,7 +94,7 @@ const TodoList = () => {
 
             <span style={{
               flex:1, fontSize:13,
-              color: todo.done ? "#334155" : "#cbd5e1",
+              color: todo.done ? "#64748b" : "#cbd5e1",
               textDecoration: todo.done ? "line-through" : "none",
               transition:"all 0.15s",
             }}>
@@ -105,11 +105,11 @@ const TodoList = () => {
               onClick={() => remove(todo.id)}
               style={{
                 background:"none", border:"none", cursor:"pointer",
-                color:"#334155", padding:2, display:"flex",
+                color:"#64748b", padding:2, display:"flex",
                 opacity:0, transition:"opacity 0.15s, color 0.15s",
               }}
               onMouseOver={e => { e.currentTarget.style.opacity="1"; e.currentTarget.style.color="#f87171"; }}
-              onMouseOut={e => { e.currentTarget.style.opacity="0"; e.currentTarget.style.color="#334155"; }}
+              onMouseOut={e => { e.currentTarget.style.opacity="0"; e.currentTarget.style.color="#64748b"; }}
               className="group-hover-show"
             >
               <Trash2 size={13} />

@@ -25,7 +25,7 @@ const Home = () => {
       }}>
         <Clock />
         <div style={{
-          fontSize:12, color:"#475569", padding:"5px 14px",
+          fontSize:12, color:"#94a3b8", padding:"5px 14px",
           borderRadius:20,
           background:"rgba(255,255,255,0.04)",
           border:"1px solid rgba(255,255,255,0.07)",
@@ -44,7 +44,7 @@ const Home = () => {
       {/* Footer */}
       <div style={{
         position:"fixed", bottom:14, left:"50%", transform:"translateX(-50%)",
-        fontSize:11, color:"#1e293b", letterSpacing:"0.06em",
+        fontSize:11, color:"#64748b", letterSpacing:"0.06em",
         zIndex:3, pointerEvents:"none", userSelect:"none",
       }}>
         lofi corner

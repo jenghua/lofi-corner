@@ -81,7 +81,7 @@ const PomodoroTimer = () => {
           <button key={m.id} onClick={() => switchMode(m.id)} style={{
             flex: 1, padding: "6px 0", borderRadius: 7, border: "none", cursor: "pointer",
             fontSize: 12, fontWeight: mode === m.id ? 600 : 400,
-            color: mode === m.id ? "#f1f5f9" : "#64748b",
+            color: mode === m.id ? "#f1f5f9" : "#94a3b8",
             background: mode === m.id ? `${m.color}30` : "transparent",
             outline: mode === m.id ? `1px solid ${m.color}50` : "1px solid transparent",
             transition: "all 0.15s",
@@ -110,7 +110,7 @@ const PomodoroTimer = () => {
             <div style={{ fontSize:30, fontWeight:700, fontFamily:"'Courier New',monospace", color:"#f1f5f9", letterSpacing:"0.04em" }}>
               {mm}:{ss}
             </div>
-            <div style={{ fontSize:11, color:"#64748b", marginTop:4 }}>{current.label}</div>
+            <div style={{ fontSize:11, color:"#94a3b8", marginTop:4 }}>{current.label}</div>
           </div>
         </div>
       </div>
@@ -119,11 +119,11 @@ const PomodoroTimer = () => {
       <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:12 }}>
         <button onClick={() => reset()} style={{
           background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)",
-          borderRadius:10, cursor:"pointer", color:"#64748b", padding:"8px 10px", display:"flex",
+          borderRadius:10, cursor:"pointer", color:"#94a3b8", padding:"8px 10px", display:"flex",
           transition:"all 0.15s",
         }}
           onMouseOver={e => (e.currentTarget.style.color = "#e2e8f0")}
-          onMouseOut={e => (e.currentTarget.style.color = "#64748b")}
+          onMouseOut={e => (e.currentTarget.style.color = "#94a3b8")}
         >
           <RotateCcw size={16} />
         </button>
@@ -141,7 +141,7 @@ const PomodoroTimer = () => {
 
       {/* Sessions */}
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-        <span style={{ fontSize:12, color:"#475569" }}>Sessions</span>
+        <span style={{ fontSize:12, color:"#8896a8" }}>Sessions</span>
         <div style={{ display:"flex", gap:5, alignItems:"center" }}>
           {Array.from({ length: Math.max(sessions, 4) }).map((_, i) => (
             <div key={i} style={{
@@ -151,7 +151,7 @@ const PomodoroTimer = () => {
               transition: "all 0.3s",
             }} />
           ))}
-          {sessions > 4 && <span style={{ fontSize:11, color:"#475569" }}>+{sessions-4}</span>}
+          {sessions > 4 && <span style={{ fontSize:11, color:"#8896a8" }}>+{sessions-4}</span>}
         </div>
       </div>
     </div>

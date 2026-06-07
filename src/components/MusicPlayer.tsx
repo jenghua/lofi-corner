@@ -14,7 +14,7 @@ const S = {
     flexDirection: "column" as const,
     gap: 14,
   },
-  label: { fontSize: 11, color: "#64748b", textTransform: "uppercase" as const, letterSpacing: "0.1em" },
+  label: { fontSize: 11, color: "#94a3b8", textTransform: "uppercase" as const, letterSpacing: "0.1em" },
 };
 
 const MusicPlayer = () => {
@@ -82,7 +82,7 @@ const MusicPlayer = () => {
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       {/* Now playing card */}
       <div style={S.card}>
-        <div style={{ fontSize: 11, color: "#64748b", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+        <div style={{ fontSize: 11, color: "#94a3b8", letterSpacing: "0.08em", textTransform: "uppercase" }}>
           Now Playing
         </div>
 
@@ -99,8 +99,11 @@ const MusicPlayer = () => {
             <div style={{ fontSize: 14, fontWeight: 600, color: "#f1f5f9", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {station.name}
             </div>
-            <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>
+            <div style={{ fontSize: 12, color: "#8896a8", marginTop: 2 }}>
               {station.description}
+            </div>
+            <div style={{ fontSize: 10, color: "#7a8fa8", marginTop: 3, letterSpacing: "0.04em" }}>
+              ▶ {station.source}
             </div>
           </div>
           {playing && (
@@ -121,9 +124,9 @@ const MusicPlayer = () => {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
           <button
             onClick={() => handleStation(STATIONS[(idx - 1 + STATIONS.length) % STATIONS.length])}
-            style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: 6, borderRadius: 8, display: "flex" }}
+            style={{ background: "none", border: "none", cursor: "pointer", color: "#8896a8", padding: 6, borderRadius: 8, display: "flex" }}
             onMouseOver={e => (e.currentTarget.style.color = "#e2e8f0")}
-            onMouseOut={e => (e.currentTarget.style.color = "#64748b")}
+            onMouseOut={e => (e.currentTarget.style.color = "#8896a8")}
           >
             <SkipBack size={18} />
           </button>
@@ -143,9 +146,9 @@ const MusicPlayer = () => {
 
           <button
             onClick={() => handleStation(STATIONS[(idx + 1) % STATIONS.length])}
-            style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: 6, borderRadius: 8, display: "flex" }}
+            style={{ background: "none", border: "none", cursor: "pointer", color: "#8896a8", padding: 6, borderRadius: 8, display: "flex" }}
             onMouseOver={e => (e.currentTarget.style.color = "#e2e8f0")}
-            onMouseOut={e => (e.currentTarget.style.color = "#64748b")}
+            onMouseOut={e => (e.currentTarget.style.color = "#8896a8")}
           >
             <SkipForward size={18} />
           </button>
@@ -155,7 +158,7 @@ const MusicPlayer = () => {
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <button
             onClick={() => setMuted(!muted)}
-            style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: 0, display: "flex", flexShrink: 0 }}
+            style={{ background: "none", border: "none", cursor: "pointer", color: "#8896a8", padding: 0, display: "flex", flexShrink: 0 }}
           >
             {muted || volume === 0 ? <VolumeX size={15} /> : <Volume2 size={15} />}
           </button>
@@ -164,7 +167,7 @@ const MusicPlayer = () => {
             onChange={e => { setVolume(+e.target.value); setMuted(false); }}
             style={{ background: `linear-gradient(to right,#7c3aed 0%,#7c3aed ${muted ? 0 : volume}%,rgba(255,255,255,0.15) ${muted ? 0 : volume}%)` }}
           />
-          <span style={{ fontSize: 11, color: "#64748b", width: 28, textAlign: "right", flexShrink: 0 }}>
+          <span style={{ fontSize: 11, color: "#8896a8", width: 28, textAlign: "right", flexShrink: 0 }}>
             {muted ? 0 : volume}%
           </span>
         </div>
@@ -192,7 +195,8 @@ const MusicPlayer = () => {
                 <div style={{ fontSize: 13, color: s.id === station.id ? "#f1f5f9" : "#94a3b8", fontWeight: s.id === station.id ? 600 : 400 }}>
                   {s.name}
                 </div>
-                <div style={{ fontSize: 11, color: "#475569" }}>{s.description}</div>
+                <div style={{ fontSize: 11, color: "#7a8fa8" }}>{s.description}</div>
+                <div style={{ fontSize: 10, color: "#64748b", marginTop: 1 }}>▶ {s.source}</div>
               </div>
               {s.id === station.id && playing && (
                 <div style={{ width: 6, height: 6, borderRadius: "50%", background: s.color, flexShrink: 0, boxShadow: `0 0 6px ${s.color}` }} />

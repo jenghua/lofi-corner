@@ -5,13 +5,8 @@ import { Plus, Trash2, Check } from "lucide-react";
 
 interface Todo { id: string; text: string; done: boolean; }
 
-const INIT: Todo[] = [
-  { id: "1", text: "Study for exam",       done: false },
-  { id: "2", text: "Finish project report", done: true  },
-];
-
 const TodoList = () => {
-  const [todos, setTodos] = useState<Todo[]>(INIT);
+  const [todos, setTodos] = useState<Todo[]>([]);
   const [input, setInput] = useState("");
   const ref = useRef<HTMLInputElement>(null);
 

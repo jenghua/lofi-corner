@@ -12,7 +12,7 @@ export const STATIONS: Station[] = [
     id: "lofi-girl",
     name: "Lofi Girl",
     description: "Beats to relax/study to",
-    youtubeId: "jfKfPfyJRdk",
+    youtubeId: "X4VbdwhkE10",
     emoji: "📚",
     color: "#7c3aed",
   },
